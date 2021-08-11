@@ -16,6 +16,16 @@ use Carbon\Carbon;
 class MoviesController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth',['except'=>['index','show','latest','commented','coming']]);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -35,6 +45,9 @@ class MoviesController extends Controller
      */
     public function create()
     {
+        if(!User::isAdmin(auth()->user()->access_level)){
+            return redirect('/')->with('error','Unauthorized access');
+        }
         //
     }
 
@@ -46,6 +59,9 @@ class MoviesController extends Controller
      */
     public function store(Request $request)
     {
+        if(!User::isAdmin(auth()->user()->access_level)){
+            return redirect('/')->with('error','Unauthorized access');
+        }
         //
     }
 
@@ -123,6 +139,9 @@ class MoviesController extends Controller
      */
     public function edit($id)
     {
+        if(!User::isAdmin(auth()->user()->access_level)){
+            return redirect('/')->with('error','Unauthorized access');
+        }
         //
     }
 
@@ -135,6 +154,9 @@ class MoviesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!User::isAdmin(auth()->user()->access_level)){
+            return redirect('/')->with('error','Unauthorized access');
+        }
         //
     }
 
@@ -146,6 +168,9 @@ class MoviesController extends Controller
      */
     public function destroy($id)
     {
+        if(!User::isAdmin(auth()->user()->access_level)){
+            return redirect('/')->with('error','Unauthorized access');
+        }
         //
     }
 

@@ -31,9 +31,8 @@
             </form>
             @endif
 
-            <form method="POST" action=""> @csrf
-                <button type="submit" name="user_edit" value="{{Auth::user()->user_id}}" class="btn btn-success">Edit</button>
-            </form>
+            @include('user.edit')
+
 
         </div>
     </div>

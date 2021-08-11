@@ -9,9 +9,26 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    /**
+     * Check to see if user is an admin
+     *
+     * @param $uac
+     * @return bool
+     */
+    public static function isAdmin($uac){
+        if($uac !== 2){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
     use HasFactory, Notifiable;
+
     // primary key
     public $primaryKey ='user_id';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -43,4 +60,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function comments(){
+        return $this->hasMany('App\Models\comment');
+    }
+
 }

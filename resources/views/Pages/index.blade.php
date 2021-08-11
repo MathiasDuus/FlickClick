@@ -1,6 +1,7 @@
 @extends('Layouts.app')
 
 @section('content')
+    {{-- dd(auth()->user()->access_level) --}}
     <div id="front" class="row">
 
         <div class="frontpage-title row">
