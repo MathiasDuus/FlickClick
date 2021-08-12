@@ -50,8 +50,8 @@
 
             <div class="collapse navbar-collapse">
                 <div class="navbar-nav ml-auto">
-                    <form class="form-inline my-2 my-lg-0" method="post" action="/home"> @csrf
-                        <button class="btn my-2 my-sm-0 NotAMember-btn" value="{{Auth::user()->user_id}}" name="profile" type="submit">{{ Auth::user()->first_name.' '.Auth::user()->last_name }}</button>
+                    <form class="form-inline my-2 my-lg-0" method="get" action="/home/{{Auth::user()->user_id}}"> @csrf
+                        <button class="btn my-2 my-sm-0 NotAMember-btn" name="profile" type="submit">{{ Auth::user()->first_name.' '.Auth::user()->last_name }}</button>
                     </form>
 
                     <form class="form-inline my-2 my-lg-0" method="POST" action="{{ route('logout') }}"> @csrf

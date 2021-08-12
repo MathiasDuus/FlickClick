@@ -34,5 +34,5 @@ Route::resource('comment',CommentController::class);
 
 Auth::routes();
 
-Route::post('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home/{id}', [HomeController::class, 'index'])->name('home');
 Route::post('/edit_user', [HomeController::class, 'edit']);

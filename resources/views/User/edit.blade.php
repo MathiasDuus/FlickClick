@@ -37,7 +37,7 @@
     </div>
 
     <div class="form-group">
-        <input type="file" name="profile_pic" class="form-control-file" accept="image/*" id="uploadProfilePicture">
+        <input type="file" name="profile_image" class="form-control-file" accept="image/*" id="uploadProfilePicture">
     </div>
 
     <button type="submit" name="update_user" value="{{Auth::user()->user_id}}" class="btn btn-primary">Update</button>
