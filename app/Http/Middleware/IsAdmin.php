@@ -20,7 +20,7 @@ class IsAdmin
         if (Auth::user()->access_level == 2){
             return $next($request);
         }
-        return redirect('/')->with('error','Unauthorized access denied');
+        return redirect('/')->with('error','Access denied');
 
     }
 }

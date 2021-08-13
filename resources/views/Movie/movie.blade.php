@@ -2,6 +2,14 @@
 
 @section('content')
     @if($movie)
+        @if(Auth::user()->access_level == 2)
+            <div class="row card_padding">
+                <div class="col-md text-left">
+
+                    <a href="{{ route('movies.edit', $movie)}}" class="btn btn-primary"> Update movie</a>
+                </div>
+            </div>
+        @endif
         <div id="top_movie" class="row">
             <div class="col-md">
                 <h1><b>{{ $movie->title }}</b></h1>
@@ -20,7 +28,7 @@
             <div class="col-md">
                 <P><b>Genres: </b><b class="red-text">
                     @foreach ($genres as $key => $genre)
-                            @if(array_key_last($genres)!=$key)
+                            @if(!$loop->last)
                                 {{$genre.', '}}
                             @else
                                 {{$genre}}
@@ -49,7 +57,7 @@
             <div class="col-md">
                 <P><b>Director: </b><b class="red-text">
                         @foreach($crew['Director'] as $key => $director)
-                            @if(array_key_last($crew['Director'])!=$key)
+                            @if(!$loop->last)
                                 {{$director['name'].', '}}
                             @else
                                 {{$director['name']}}
@@ -60,7 +68,7 @@
             <div class="col-md">
                 <P><b>Writers: </b><b class="red-text">
                         @foreach($crew['Writer'] as $key => $writer)
-                            @if(array_key_last($crew['Writer'])!=$key)
+                            @if(!$loop->last)
                                 {{$writer['name'].', '}}
                             @else
                                 {{$writer['name']}}
@@ -71,7 +79,7 @@
             <div class="col-md">
                 <P><b>Stars: </b><b class="red-text">
                         @foreach($crew['Actor'] as $key => $actor)
-                            @if(array_key_last($crew['Actor'])!=$key)
+                            @if(!$loop->last)
                                 {{$actor['name'].', '}}
                             @else
                                 {{$actor['name']}}

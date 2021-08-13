@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand navbar-dark bg-darkgray">
 
         <div class="collapse navbar-collapse">
-            <a id="flickClickLogo" href="/"><img src="../storage/images/logo.png" alt="Flick Click Logo"/></a>
+            <a id="flickClickLogo" href="/"><img src="../../storage/images/logo.png" alt="Flick Click Logo"/></a>
             <div class="navbar-nav ml-auto">
                 <a id="frontpage" class="col-sm nav-item nav-link" href="/">HOME <span class="sr-only">(current)</span></a>
                 <a id="news" class="col-sm nav-item nav-link" href="/news">NEWS</a>

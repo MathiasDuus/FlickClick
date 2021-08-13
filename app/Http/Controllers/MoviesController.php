@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\models\movie;
 use App\models\comment;
 use Carbon\Carbon;
+use phpDocumentor\Reflection\Types\Collection;
 
 class MoviesController extends Controller
 {
@@ -24,6 +25,60 @@ class MoviesController extends Controller
     {
         $this->middleware(['auth','admin'],['except'=>['index','show','latest','commented','coming']]);
     }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    private function getMovieInfo(int $id):array{
+        $movie = movie::where('movie_id','=',$id)->first();
+
+        // gets all genre id's to a specific movie
+        $movie_genres = movie_genre::where('movie_id','=',$movie->movie_id)->select('genre_id')->get();
+
+        // counts how many genres
+        $genreCount = count($movie_genres);
+
+        // makes array to hold the genre names
+        $genres = array();
+        if($genreCount>0) {
+            // loop to get all genre names
+            foreach ($movie_genres as $movie_genre){
+                // gets the genre name for the movie and puts it in an array
+                array_push($genres,genre::where('genre_id', '=', $movie_genre->genre_id)->first()->genre_name);}
+        }
+        else{
+            // If there is no genres return N/A
+            array_push($genres, "N/A");
+        }
+
+        //gets the crew(director, actor and writer)
+        $movieCrew = crew::where('movie_id','=',$id)->get();
+
+        $crew = array();
+        $i = 0;
+
+        //dd($crew);
+        foreach ($movieCrew as $person){
+            $name = person::where('person_id','=',$person->person_id)->first()->name;
+            $position = job::where('job_id','=',$person->job_id)->first()->job;
+
+            switch ($position) {
+                case 'Director':
+                    $crew['Director'][$i]['name'] = $name;
+                    break;
+                case 'Writer':
+                    $crew['Writer'][$i]['name'] = $name;
+                    break;
+                case 'Actor':
+                    $crew['Actor'][$i]['name'] = $name;
+                    break;
+            }
+            $i++;
+        }
+        return ["movie" => $movie, "genres" => $genres, "crew" =>$crew];
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -161,14 +216,6 @@ class MoviesController extends Controller
                 'genre_name' => $genre
             ])['genre_id'];
 
-            //dd(auth());
- /*
-            // checks the people database to see if they exist
-            $genre_id = person::where('name','=',$genre)->firstOr(function ($genre) {
-                $new_genre = new genre;
-                $new_genre->genre_name = $genre;
-                $new_genre->save();
-            })->select('genre_id')->genre_id;*/
 
             $movie_genre = new movie_genre;
             $movie_genre->genre_id = $genre_id;
@@ -198,27 +245,8 @@ class MoviesController extends Controller
      */
     public function show($id)
     {
-        $movie = movie::where('movie_id','=',$id)->first();
-
-        // gets all genre id's to a specific movie
-        $movie_genres = movie_genre::where('movie_id','=',$movie->movie_id)->select('genre_id')->get();
-
-        // counts how many genres
-        $genreCount = count($movie_genres);
-
-        // makes array to hold the genre names
-        $genres = array();
-        if($genreCount>0) {
-            // loop to get all genre names
-            foreach ($movie_genres as $movie_genre){
-                // gets the genre name for the movie and puts it in an array
-                array_push($genres,genre::where('genre_id', '=', $movie_genre->genre_id)->first()->genre_name);}
-        }
-        else{
-            // If there is no genres return N/A
-            array_push($genres, "N/A");
-        }
-
+        $movie_info = $this->getMovieInfo($id);
+        //dd($movie_info['crew']);
         // gets all comments on the movie
         $comments = comment::where('movie_id','=',$id)->orderBy('post_date','desc')->get();
 
@@ -227,33 +255,7 @@ class MoviesController extends Controller
             $comment['username']= $user->first_name.' '.$user->last_name;
         }
 
-
-        //gets the crew(director, actor and writer)
-        $movieCrew = crew::where('movie_id','=',$id)->get();
-
-        $crew = array();
-        $i = 0;
-
-        //dd($crew);
-        foreach ($movieCrew as $person){
-            $name = person::where('person_id','=',$person->person_id)->first()->name;
-            $position = job::where('job_id','=',$person->job_id)->first()->job;
-
-            switch ($position) {
-                case 'Director':
-                    $crew['Director'][$i]['name'] = $name;
-                    break;
-                case 'Writer':
-                    $crew['Writer'][$i]['name'] = $name;
-                    break;
-                case 'Actor':
-                    $crew['Actor'][$i]['name'] = $name;
-                    break;
-            }
-            $i++;
-        }
-
-        return view('Movie.movie', ["movie" => $movie, "genres" => $genres, "comments" => $comments, "crew" =>$crew]);
+        return view('Movie.movie', ["movie" => $movie_info['movie'], "genres" => $movie_info['genres'], "comments" => $comments, "crew" =>$movie_info['crew']]);
     }
 
     /**
@@ -264,7 +266,8 @@ class MoviesController extends Controller
      */
     public function edit($id)
     {
-        return view('movie.edit')-with('movie_id', $id);
+        $movie_info = $this->getMovieInfo($id);
+        return view('movie.edit',["movie" => $movie_info['movie'], "genres" => $movie_info['genres'], "crew" =>$movie_info['crew']]);
     }
 
     /**
@@ -276,8 +279,50 @@ class MoviesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        dd($request); // not working, not done
+        $this->validate($request, [
+            'title' => ['required','string'],
+            'description' => ['required','string'],
+            'trailer_url' => ['required','string'],
+            'poster' => ['nullable','image'],
+            'age_rating' => ['required','string'],
+            'duration' => ['required','numeric'],
+            'release_date' => ['required','date'],
+            'genre' => ['required','string'],
+            'director' => ['required','string'],
+            'writer' => ['required','string'],
+            'actor' => ['required','string'],
+        ]);
 
-        //
+        $movie = movie::find($id);
+
+        if($request->hasFile('poster')){
+            // Get filename with the extension
+            $filenameWithExt = $request->file('poster')->getClientOriginalName();
+            // Get just filename
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $request->file('poster')->getClientOriginalExtension();
+            // Filename to store
+            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+            // Upload Image
+            $path = $request->file('poster')->storeAs('public/images/poster', $fileNameToStore);
+        }
+
+        $movie->title=$request->input('title');
+        $movie->description=$request->input('description');
+        $movie->trailer_url=$request->input('trailer_url');
+        if($request->hasFile('poster')){
+            $movie->poster = $fileNameToStore;
+        }
+        $movie->age_rating=$request->input('age_rating');
+        $movie->duration=$request->input('duration');
+        $movie->release_date=$request->input('release_date');
+        $movie->save();
+
+
+
+        return redirect('/movies/'.$id)->with('success','Movie Updated');
     }
 
     /**

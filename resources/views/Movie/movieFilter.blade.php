@@ -1,6 +1,13 @@
 @extends('Layouts.app')
 
 @section('content')
+@if(Auth::user()->access_level == 2)
+    <div class="row card_padding">
+        <div class="col-md text-left">
+            <a href="/movies/create" class="btn btn-primary"> New movie</a>
+        </div>
+    </div>
+@endif
 <div id="front" class="row">
     @foreach($movies as $movie)
         <div class="col-lg-2 card-margin">
