@@ -11,4 +11,7 @@ class movie_genre extends Model
 
     // primary key
     public $primaryKey ='movie_genre_id';
+
+    // does not try to add created_at and updated_at
+    public $timestamps = false;
 }

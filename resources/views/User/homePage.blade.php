@@ -26,9 +26,7 @@
 
             {{-- If the user is an admin, display the CMS button --}}
             @if (Auth::user()->access_level == 2)
-            <form method="POST" action="/cms"> @csrf
-                <button type="submit" name="go_cms" class="btn btn-info">CMS</button>
-            </form>
+            <a href="/cms" class="btn btn-primary">CMS</a>
             @endif
 
             @include('user.edit')

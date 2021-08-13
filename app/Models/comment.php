@@ -12,6 +12,7 @@ class comment extends Model
     // primary key
     public $primaryKey ='comment_id';
 
+    // does not try to add created_at and updated_at
     public $timestamps = false;
 
     public function user(){

@@ -6,6 +6,7 @@ use App\Http\Controllers\MoviesController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use \App\Http\Controllers\CommentController;
+use \App\Http\Controllers\cmsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,3 +37,20 @@ Auth::routes();
 
 Route::get('/home/{id}', [HomeController::class, 'index'])->name('home');
 Route::post('/edit_user', [HomeController::class, 'edit']);
+
+// Routes concerning CMS
+Route::get('/cms',[cmsController::class, 'index'])->name('cms');
+Route::get('/cms/news',[cmsController::class, 'news'])->name('cms');
+Route::get('/cms/movies',[cmsController::class, 'movies'])->name('cms');
+Route::get('/cms/comments',[cmsController::class, 'comments'])->name('cms');
+Route::get('/cms/users',[cmsController::class, 'users'])->name('cms');
+Route::get('/cms/contact_page',[cmsController::class, 'contact_page'])->name('cms');
+/*
+/cms
+/news
+/movies
+/comments
+/users
+/contact_page
+
+ */

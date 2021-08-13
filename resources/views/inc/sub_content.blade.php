@@ -42,7 +42,7 @@
 
                 <p id="coming-soon-title">{{$movie->title}}</p>
                 <div class="row">
-                    <img id="coming-soon-poster" src="../images/poster/{{$movie->poster}}" alt="Movie poster">
+                    <img id="coming-soon-poster" src="../storage/images/poster/{{$movie->poster}}" alt="Movie poster">
 
                     <div class="col-md">
 

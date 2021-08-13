@@ -7,7 +7,6 @@ use App\Models\movie;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -47,7 +46,6 @@ class HomeController extends Controller
 
     public function edit(Request $request)
     {
-
         if($request->update_user != auth()->id()){
             return redirect('/')->with('error','Unauthorized access');
         }

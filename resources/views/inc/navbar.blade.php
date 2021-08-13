@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand navbar-dark bg-darkgray">
 
         <div class="collapse navbar-collapse">
-            <a id="flickClickLogo" href="/"><img src="../images/logo.png" alt="Flick Click Logo"/></a>
+            <a id="flickClickLogo" href="/"><img src="../storage/images/logo.png" alt="Flick Click Logo"/></a>
             <div class="navbar-nav ml-auto">
                 <a id="frontpage" class="col-sm nav-item nav-link" href="/">HOME <span class="sr-only">(current)</span></a>
                 <a id="news" class="col-sm nav-item nav-link" href="/news">NEWS</a>
@@ -46,16 +46,14 @@
             </div>
         </nav>
     @else
-        <nav class="navbar navbar-expand navbar-dark bg-darkgray nav-height">
+        <nav id="nav-bot" class="navbar navbar-expand navbar-dark bg-darkgray nav-height">
 
             <div class="collapse navbar-collapse">
                 <div class="navbar-nav ml-auto">
-                    <form class="form-inline my-2 my-lg-0" method="get" action="/home/{{Auth::user()->user_id}}"> @csrf
-                        <button class="btn my-2 my-sm-0 NotAMember-btn" name="profile" type="submit">{{ Auth::user()->first_name.' '.Auth::user()->last_name }}</button>
-                    </form>
+                    <a href="/home/{{Auth::user()->user_id}}" id="white_a" class="my-2 my-sm-0 ">{{ Auth::user()->first_name.' '.Auth::user()->last_name }}</a>
 
                     <form class="form-inline my-2 my-lg-0" method="POST" action="{{ route('logout') }}"> @csrf
-                        <button class="btn my-2 my-sm-0 NotAMember-btn" name="logout" type="submit">Log out</button>
+                        <button class="my-2 my-sm-0 NotAMember-btn" name="logout" type="submit">Log out</button>
                     </form>
                 </div>
             </div>

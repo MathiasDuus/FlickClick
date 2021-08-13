@@ -22,7 +22,7 @@ class MoviesController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth',['except'=>['index','show','latest','commented','coming']]);
+        $this->middleware(['auth','admin'],['except'=>['index','show','latest','commented','coming']]);
     }
 
     /**
@@ -45,24 +45,149 @@ class MoviesController extends Controller
      */
     public function create()
     {
-        if(!User::isAdmin(auth()->user()->access_level)){
-            return redirect('/')->with('error','Unauthorized access');
+        return view('Movie.create');
+    }
+
+    /**
+     * Adds or updates the crew and person tables
+     *
+     * @param array $people
+     * @param int $id
+     * @param int $job_id
+     * @return void
+     */
+    public function crewUpdate(array $people, int $id, int $job_id){
+        foreach ($people as $person){
+            // removes all leading whitespaces
+            $person = ltrim($person);
+
+            // makes the name lower case, to eliminate duplicates with different capitalization
+            $person = strtolower($person);
+
+            // Capitalises first letter of each word
+            $person = ucwords($person);
+
+            $person_id = person::firstOrCreate([
+                'name' => $person
+            ])['person_id'];
+
+
+            $crew = new crew;
+            $crew->person_id = $person_id;
+            $crew->movie_id = $id;
+            $crew->job_id = $job_id;
+            $crew->save();
         }
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
-        if(!User::isAdmin(auth()->user()->access_level)){
-            return redirect('/')->with('error','Unauthorized access');
+        $this->validate($request, [
+            'title' => ['required','string'],
+            'description' => ['required','string'],
+            'trailer_url' => ['required','string'],
+            'poster' => ['required','image'],
+            'age_rating' => ['required','string'],
+            'duration' => ['required','numeric'],
+            'release_date' => ['required','date'],
+            'genre' => ['required','string'],
+            'director' => ['required','string'],
+            'writer' => ['required','string'],
+            'actor' => ['required','string'],
+        ]);
+
+        $trailer_url = $request->input('trailer_url');
+        // Adds "/embed" before the last / to enable that the browser can play
+        $url = $trailer_url;
+        $pos =strripos($url, "/");
+        $url = substr_replace($url,"/embed",$pos,0);
+        //replaces .be with be.com
+        $pos =strripos($url, ".be");
+        $trailer_url = substr_replace($url,"be.com",$pos,3);
+
+
+        if($request->hasFile('poster')){
+            // Get filename with the extension
+            $filenameWithExt = $request->file('poster')->getClientOriginalName();
+            // Get just filename
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $request->file('poster')->getClientOriginalExtension();
+            // Filename to store
+            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+            // Upload Image
+            $path = $request->file('poster')->storeAs('public/images/poster', $fileNameToStore);
+        }else{
+            $fileNameToStore = 'lorem_poster'.'_'.time().'.'.'png';
         }
-        //
+
+        $movie = new movie;
+        $movie->title = $request->input('title');
+        $movie->description = $request->input('description');
+        $movie->trailer_url = $trailer_url;
+        $movie->poster = $fileNameToStore;
+        $movie->age_rating = $request->input('age_rating');
+        $movie->duration = $request->input('duration');
+        $movie->release_date = $request->input('release_date');
+        $movie->save();
+
+        $movie_id = movie::where('poster','=',$fileNameToStore)->select('movie_id')->first()->movie_id;
+
+
+        $genres = $request['genre'];
+        $directors = $request['director'];
+        $writers = $request['writer'];
+        $actors = $request['actor'];
+
+
+        foreach (explode(',',$genres) as $genre){
+            // removes all leading whitespaces
+            $genre = ltrim($genre);
+
+            // makes the name lower case, to eliminate duplicates with different capitalization
+            $genre = strtolower($genre);
+
+            // Capitalises first letter of each word
+            $genre = ucwords($genre);
+
+            $genre_id = genre::firstOrCreate([
+                'genre_name' => $genre
+            ])['genre_id'];
+
+            //dd(auth());
+ /*
+            // checks the people database to see if they exist
+            $genre_id = person::where('name','=',$genre)->firstOr(function ($genre) {
+                $new_genre = new genre;
+                $new_genre->genre_name = $genre;
+                $new_genre->save();
+            })->select('genre_id')->genre_id;*/
+
+            $movie_genre = new movie_genre;
+            $movie_genre->genre_id = $genre_id;
+            $movie_genre->movie_id = $movie_id;
+            $movie_genre->save();
+        }
+        /**
+         checks whether the person exist in the db and if they don't -
+         Creates them and adds them to the crew table, if they exist add a new entry to crew.
+        */
+        // director
+        $directorExist = $this->crewUpdate(explode(',',$directors), $movie_id,1);
+        // writer
+        $writerExist = $this->crewUpdate(explode(',',$writers), $movie_id,2);
+        //actor
+        $actorExist = $this->crewUpdate(explode(',',$actors), $movie_id,3);
+
+
+        return redirect('/cms/movies')->with('success','movie added');
     }
 
     /**
@@ -139,10 +264,7 @@ class MoviesController extends Controller
      */
     public function edit($id)
     {
-        if(!User::isAdmin(auth()->user()->access_level)){
-            return redirect('/')->with('error','Unauthorized access');
-        }
-        //
+        return view('movie.edit')-with('movie_id', $id);
     }
 
     /**
@@ -154,9 +276,7 @@ class MoviesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(!User::isAdmin(auth()->user()->access_level)){
-            return redirect('/')->with('error','Unauthorized access');
-        }
+
         //
     }
 
@@ -168,9 +288,7 @@ class MoviesController extends Controller
      */
     public function destroy($id)
     {
-        if(!User::isAdmin(auth()->user()->access_level)){
-            return redirect('/')->with('error','Unauthorized access');
-        }
+
         //
     }
 

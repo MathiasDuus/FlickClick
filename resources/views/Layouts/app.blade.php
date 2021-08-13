@@ -36,7 +36,7 @@
         @include('inc.messages')
         @yield('content')
 
-        @if(!in_array(\Route::currentRouteName(),['login', 'register', 'cms','edit_user']))
+        @if(!in_array(\Route::currentRouteName(),['login', 'register', 'cms','edit_user','movies.create']))
             @include('inc.sub_content')
             </div>
             @include('inc.footer')

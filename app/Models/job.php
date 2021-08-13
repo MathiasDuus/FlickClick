@@ -11,4 +11,7 @@ class job extends Model
 
     // primary key
     public $primaryKey ='job_id';
+
+    // does not try to add created_at and updated_at
+    public $timestamps = false;
 }

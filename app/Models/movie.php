@@ -12,26 +12,6 @@ class movie extends Model
     // primary key
     public $primaryKey ='movie_id';
 
-
-    /*protected $genre = '';
-
-    public function getGnere()
-    {
-        return $this->genre;
-    }
-
-    public function setGenre($value)
-    {
-        $this->genre = $value;
-    }
-
-    protected $comment_count = 0;
-
-    public function getCommentCount(){
-        return $this->comment_count;
-    }
-
-    public function setCommentCount($value){
-        $this->comment_count = $value;
-    }*/
+    // does not try to add created_at and updated_at
+    public $timestamps = false;
 }

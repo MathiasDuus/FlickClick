@@ -11,4 +11,7 @@ class contact extends Model
 
     // primary key
     public $primaryKey ='contact_id';
+
+    // does not try to add created_at and updated_at
+    public $timestamps = false;
 }

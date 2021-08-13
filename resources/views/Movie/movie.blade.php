@@ -15,16 +15,16 @@
                 <P><b>Age Rating: </b><b class="red-text">{{$movie->age_rating}}</b></P>
             </div>
             <div class="col-md">
-                <P><b>Duration: </b><b class="red-text">{{$movie->duration}}</b></P>
+                <P><b>Duration: </b><b class="red-text">{{date('G\h i\m',mktime(0,$movie->duration))}}</b></P>
             </div>
             <div class="col-md">
                 <P><b>Genres: </b><b class="red-text">
-
-                    @foreach ($genres as $genre)
-                            {{$genre}}
-                        @if($genre != $genres[+1])
-                            {{', '}}
-                        @endif
+                    @foreach ($genres as $key => $genre)
+                            @if(array_key_last($genres)!=$key)
+                                {{$genre.', '}}
+                            @else
+                                {{$genre}}
+                            @endif
                     @endforeach
 
                     </b></P>
@@ -36,7 +36,7 @@
         </div>
         <div id="poster_trailer" class="row">
             <div class="col-md-3">
-                <img id="poster_movie" src="../images/poster/{{$movie->poster}}" alt="Movie poster">
+                <img id="poster_movie" src="../storage/images/poster/{{$movie->poster}}" alt="Movie poster">
             </div>
             <div class="col-md">
                 <iframe id="trailer_movie" type="text/html"
@@ -48,29 +48,35 @@
         <div id="button_info_movie" class="row">
             <div class="col-md">
                 <P><b>Director: </b><b class="red-text">
-                        @if(count($crew['Director'])>0)
-                            @foreach($crew['Director'] as $director)
-                                {{ $director['name'] }}
-                            @endforeach
-                        @endif
+                        @foreach($crew['Director'] as $key => $director)
+                            @if(array_key_last($crew['Director'])!=$key)
+                                {{$director['name'].', '}}
+                            @else
+                                {{$director['name']}}
+                            @endif
+                        @endforeach
                     </b></P>
             </div>
             <div class="col-md">
                 <P><b>Writers: </b><b class="red-text">
-                        @if(count($crew['Writer'])>0)
-                            @foreach($crew['Writer'] as $writer)
-                                {{ $writer['name'] }}
-                            @endforeach
-                        @endif
+                        @foreach($crew['Writer'] as $key => $writer)
+                            @if(array_key_last($crew['Writer'])!=$key)
+                                {{$writer['name'].', '}}
+                            @else
+                                {{$writer['name']}}
+                            @endif
+                        @endforeach
                     </b></P>
             </div>
             <div class="col-md">
                 <P><b>Stars: </b><b class="red-text">
-                        @if(count($crew['Actor'])>0)
-                            @foreach($crew['Actor'] as $actor)
-                                {{ $actor['name'] }}
-                            @endforeach
-                        @endif
+                        @foreach($crew['Actor'] as $key => $actor)
+                            @if(array_key_last($crew['Actor'])!=$key)
+                                {{$actor['name'].', '}}
+                            @else
+                                {{$actor['name']}}
+                            @endif
+                        @endforeach
                     </b></P>
             </div>
         </div>

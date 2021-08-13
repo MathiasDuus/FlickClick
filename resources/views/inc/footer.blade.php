@@ -6,10 +6,10 @@
         <a class="footer-link" href="/contact">CONTACT</a>
 
         <div id="social">
-            <img class="social" src="../images/social/facebook.png" alt="facebook">
-            <img class="social" src="../images/social/twitter.png" alt="twitter">
-            <img class="social" src="../images/social/instagram.png" alt="instagram">
-            <img class="social" src="../images/social/youtube.png" alt="youtube">
+            <img class="social" src="../storage/images/social/facebook.png" alt="facebook">
+            <img class="social" src="../storage/images/social/twitter.png" alt="twitter">
+            <img class="social" src="../storage/images/social/instagram.png" alt="instagram">
+            <img class="social" src="../storage/images/social/youtube.png" alt="youtube">
         </div>
 
         <p>© 2018 Flick Click Aps </p>

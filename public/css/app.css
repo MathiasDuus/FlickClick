@@ -10016,6 +10016,14 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
+#white_a {
+  color: white;
+}
+
+.btn-primary {
+  text-decoration: none;
+}
+
 a {
   color: red;
   text-decoration: underline;
@@ -10032,6 +10040,10 @@ a {
 
 .bg-darkgray {
   background-color: #333333;
+}
+
+.card_padding {
+  padding-top: 3%;
 }
 
 .card-margin {

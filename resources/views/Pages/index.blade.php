@@ -12,17 +12,17 @@
         @foreach($latest as $movie)
             <div class="col-lg card-margin">
                 <div class="card">
-                    <img class="card-img card-image" src="../images/poster/{{$movie->poster}}" alt="Movie poster">
+                    <img class="card-img card-image" src="../storage/images/poster/{{$movie->poster}}" alt="Movie poster">
 
                     <div class="card-img-overlay">
                         <a href="movies/{{$movie->movie_id}}">
-                            <img alt="Movie Poster Overlay" class="card-image" src="../images/poster-overlay.png">
+                            <img alt="Movie Poster Overlay" class="card-image" src="../storage/images/poster-overlay.png">
                         </a>
                         <p id="poster-overlay-title">{{$movie->title}}</p>
                     </div>
 
                     <div class="img-container">
-                        <img class="comment-bubble" src="../images/comment-icon.png" alt="Comment icon"/>
+                        <img class="comment-bubble" src="../storage/images/comment-icon.png" alt="Comment icon"/>
                         <p class="card-title commentCount">{{$movie->comment_count}}</p>
                     </div>
                 </div>
@@ -41,15 +41,15 @@
 
         <div class="col-lg card-margin">
             <div class="card">
-                <img class="card-img-top card-image" src="../images/poster/{{$movie->poster}}" alt="Movie poster">
+                <img class="card-img-top card-image" src="../storage/images/poster/{{$movie->poster}}" alt="Movie poster">
                 <div class="card-img-overlay">
                     <a href="movies/{{$movie->movie_id}}">
-                        <img alt="Movie Poster Overlay" class="card-image" src="../images/poster-overlay.png">
+                        <img alt="Movie Poster Overlay" class="card-image" src="../storage/images/poster-overlay.png">
                     </a>
                     <p id="poster-overlay-title">{{$movie->title}}</p>
                 </div>
                 <div class="img-container">
-                    <img class="comment-bubble" src="../images/comment-icon.png" alt="Comment icon"/>
+                    <img class="comment-bubble" src="../storage/images/comment-icon.png" alt="Comment icon"/>
                     <p class="card-title commentCount">{{$movie->comment_count}}</p>
                 </div>
             </div>
