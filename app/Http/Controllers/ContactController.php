@@ -16,7 +16,7 @@ class ContactController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth',['except'=>['index']]);
+        $this->middleware(['auth', 'admin'],['except'=>['index','show','store']]);
     }
 
     /**
@@ -26,7 +26,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contact_site = contact_site::select('description')->first();
+        $contact_site = contact_site::select('description')->first()->description;
         return view('Pages.contact')->with('contact_site', $contact_site);
     }
 
@@ -48,7 +48,18 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'message' => 'required|string|max:255',
+        ]);
+
+        $contact = new contact();
+        $contact->name = $request->input('name');
+        $contact->email = $request->input('email');
+        $contact->message = $request->input('message');
+        $contact->save();
+        return redirect('/contact')->with('success','Message send');
     }
 
     /**

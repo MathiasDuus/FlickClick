@@ -12,17 +12,17 @@
     <div class="row">
         <div class="col contact-form">
             <h2 class="red-text"><b>Get in touch</b></h2>
-            <form method="POST">
+            <form method="POST" action="{{route('contact.store')}}"> @csrf
                 <div class="form-group">
-                    <input required maxlength="100" name="Name" type="text" class="form-control" id="inputName" placeholder="Your Name...">
+                    <input name="name" type="text" class="form-control" id="inputName" placeholder="Your Name...">
                 </div>
                 <div class="form-group">
-                    <input required maxlength="150" name="Email" type="email" class="form-control" id="inputEmail" placeholder="Your Email Address...">
+                    <input name="email" type="email" class="form-control" id="inputEmail" placeholder="Your Email Address...">
                 </div>
                 <div class="form-group">
-                    <textarea required name="Message" maxlength="1000" class="form-control" id="exampleFormControlTextarea1" rows="5" placeholder="Your Message..."></textarea>
+                    <textarea class="form-control" name="message" rows="5" placeholder="Your Message..."></textarea>
                 </div>
-                <button type="submit" name="contact" class="btn btn-secondary">Send</button>
+                <button type="submit" class="btn btn-primary">Send</button>
             </form>
         </div>
     </div>

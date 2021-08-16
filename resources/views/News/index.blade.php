@@ -1,13 +1,15 @@
 @extends('Layouts.app')
 
 @section('content')
-    @if(Auth::user()->access_level == 2)
-        <div class="row card_padding">
-            <div class="col-md text-left">
-                <a href="news/create" class="btn btn-success"> New News</a>
+    @auth
+        @if(Auth::user()->access_level == 2)
+            <div class="row card_padding">
+                <div class="col-md text-left">
+                    <a href="news/create" class="btn btn-success"> New News</a>
+                </div>
             </div>
-        </div>
-    @endif
+        @endif
+    @endauth
     @foreach($news as $new)
         <div class="col news">
             <h2><b>{!! $new->title !!}</b></h2>

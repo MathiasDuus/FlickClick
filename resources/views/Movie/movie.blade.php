@@ -2,19 +2,21 @@
 
 @section('content')
     @if($movie)
-        @if(Auth::user()->access_level == 2)
-            <div class="row card_padding">
-                <div class="col-md text-left">
+        @auth
+            @if(Auth::user()->access_level == 2)
+                <div class="row card_padding">
+                    <div class="col-md text-left">
 
-                    <a href="{{ route('movies.edit', $movie)}}" class="btn btn-primary"> Update movie</a>
+                        <a href="{{ route('movies.edit', $movie)}}" class="btn btn-primary"> Update movie</a>
+                    </div>
+                    <div class="col-md text-right">
+                        <form method="POST" action="{{ route('movies.destroy', $movie)}}" >@csrf
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button class="btn btn-danger"> Delete movie</button></form>
+                    </div>
                 </div>
-                <div class="col-md text-right">
-                    <form method="POST" action="{{ route('movies.destroy', $movie)}}" >@csrf
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button class="btn btn-danger"> Delete movie</button></form>
-                </div>
-            </div>
-        @endif
+            @endif
+        @endauth
         <div id="top_movie" class="row">
             <div class="col-md">
                 <h1><b>{{ $movie->title }}</b></h1>

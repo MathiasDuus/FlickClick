@@ -23,15 +23,7 @@
             </div>
         </div>
         <div class="col">
-
-            {{-- If the user is an admin, display the CMS button --}}
-            @if (Auth::user()->access_level == 2)
-            <a href="/cms" class="btn btn-primary">CMS</a>
-            @endif
-
             @include('user.edit')
-
-
         </div>
     </div>
     <div class="col" id="comment_user">
