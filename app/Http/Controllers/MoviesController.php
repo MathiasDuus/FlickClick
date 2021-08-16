@@ -104,14 +104,11 @@ class MoviesController extends Controller
     }
 
     /**
-     * Adds or updates the crew and person tables
-     *
      * @param array $people
-     * @param int $id
+     * @param int $movie_id
      * @param int $job_id
-     * @return void
      */
-    public function crewUpdate(array $people, int $id, int $job_id){
+    private function crewCreate(array $people, int $movie_id, int $job_id){
         foreach ($people as $person){
             // removes all leading whitespaces
             $person = ltrim($person);
@@ -129,7 +126,7 @@ class MoviesController extends Controller
 
             $crew = new crew;
             $crew->person_id = $person_id;
-            $crew->movie_id = $id;
+            $crew->movie_id = $movie_id;
             $crew->job_id = $job_id;
             $crew->save();
         }
@@ -227,11 +224,11 @@ class MoviesController extends Controller
          Creates them and adds them to the crew table, if they exist add a new entry to crew.
         */
         // director
-        $directorExist = $this->crewUpdate(explode(',',$directors), $movie_id,1);
+        $this->crewCreate(explode(',',$directors), $movie_id,1);
         // writer
-        $writerExist = $this->crewUpdate(explode(',',$writers), $movie_id,2);
+        $this->crewCreate(explode(',',$writers), $movie_id,2);
         //actor
-        $actorExist = $this->crewUpdate(explode(',',$actors), $movie_id,3);
+        $this->crewCreate(explode(',',$actors), $movie_id,3);
 
 
         return redirect('/cms/movies')->with('success','movie added');
@@ -279,7 +276,7 @@ class MoviesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request); // not working, not done
+
         $this->validate($request, [
             'title' => ['required','string'],
             'description' => ['required','string'],
@@ -293,6 +290,34 @@ class MoviesController extends Controller
             'writer' => ['required','string'],
             'actor' => ['required','string'],
         ]);
+
+
+        //$people = $request['writer'];
+
+
+        $movie_info = $this->getMovieInfo($id);
+
+
+
+
+        //dd($people == $oldPeople);
+
+        if($movie_info['movie']->trailer_url != $request->input('trailer_url')){
+            $trailer_url = $request->input('trailer_url');
+            // Adds "/embed" before the last / to enable that the browser can play
+            $url = $trailer_url;
+            $pos =strripos($url, "/");
+            $url = substr_replace($url,"/embed",$pos,0);
+            //replaces .be with be.com
+            $pos =strripos($url, ".be");
+            $trailer_url = substr_replace($url,"be.com",$pos,3);
+        }
+
+        $genres = $request['genre'];
+        $directors = $request['director'];
+        $writers = $request['writer'];
+        $actors = $request['actor'];
+
 
         $movie = movie::find($id);
 
@@ -311,7 +336,9 @@ class MoviesController extends Controller
 
         $movie->title=$request->input('title');
         $movie->description=$request->input('description');
-        $movie->trailer_url=$request->input('trailer_url');
+        if (isset($trailer_url)){
+            $movie->trailer_url=$trailer_url;
+        }
         if($request->hasFile('poster')){
             $movie->poster = $fileNameToStore;
         }
@@ -321,8 +348,106 @@ class MoviesController extends Controller
         $movie->save();
 
 
+        $genres = explode(',',$genres);
 
+        foreach ($genres as $key => $genre) {
+            // removes all leading whitespaces
+            $genre = ltrim($genre);
+
+            // makes the name lower case, to eliminate duplicates with different capitalization
+            $genre = strtolower($genre);
+
+            // Capitalises first letter of each word
+            $genre = ucwords($genre);
+
+            $genres[$key] = $genre;
+        }
+
+        sort($genres);
+        sort($movie_info['genres']);
+
+        $diff = count($movie_info['genres']) == count($genres);
+        if (!$diff) {
+            return redirect('/movies/'.$id.'/edit')->with('error', 'Accepts only '.count($movie_info['genres']).' genres');
+        }
+
+        if($genres != $movie_info['genres']){
+            foreach ($genres as $key => $genre){
+                $genre_id = genre::firstOrCreate([
+                    'genre_name' => $genre
+                ])['genre_id'];
+
+                $oldGenreId=genre::where('genre_name',$movie_info['genres'][$key])->first()['genre_id'];
+
+                movie_genre::updateOrInsert(
+                    ['movie_id'=>$id, 'genre_id'=>$oldGenreId],
+                    ['genre_id'=>$genre_id]
+                );
+            }
+        }
+        /**
+        checks whether the person exist in the db and if they don't -
+        Creates them and adds them to the crew table, if they exist add a new entry to crew.
+         */
+        // director
+        $this->crewUpdate(explode(',',$directors), $movie_info['crew']['Director'], $id,1);
+        // writer
+        $this->crewUpdate(explode(',',$writers), $movie_info['crew']['Writer'], $id,2);
+        //actor
+        $this->crewUpdate(explode(',',$actors), $movie_info['crew']['Actor'], $id,3);
+
+
+        //dd(auth());
         return redirect('/movies/'.$id)->with('success','Movie Updated');
+    }
+
+    /**
+     * @param array $people
+     * @param array $oldPeople
+     * @param int $movie_id
+     * @param int $job_id
+     */
+    private function crewUpdate(array $people, array $oldPeople, int $movie_id, int $job_id){
+
+        foreach ($oldPeople as $key => $old){
+            $oldPeople[$key] = $old['name'];
+        }
+
+        foreach ($people as $key => $person) {
+            // removes all leading whitespaces
+            $person = ltrim($person);
+
+            // makes the name lower case, to eliminate duplicates with different capitalization
+            $person = strtolower($person);
+
+            // Capitalises first letter of each word
+            $person = ucwords($person);
+
+            $people[$key] = $person;
+        }
+
+        sort($people);
+        sort($oldPeople);
+
+        $diff = count($oldPeople) == count($people);
+        if (!$diff) {
+            return redirect('/movies/'.$movie_id.'/edit')->with('error', 'Accepts only '.count($oldPeople).' names');
+        }
+
+        if($people != $oldPeople){
+            foreach ($people as $key => $person){
+                $person_id = person::firstOrCreate([
+                    'name' => $person
+                ])['person_id'];
+
+                $oldPersonId = person::where('name',$oldPeople[$key])->first()['person_id'];
+
+                crew::updateOrInsert(
+                    ['movie_id'=>$movie_id, 'person_id'=>$oldPersonId],
+                    ['person_id'=>$person_id]
+                );
+            }
+        }
     }
 
     /**
@@ -333,8 +458,22 @@ class MoviesController extends Controller
      */
     public function destroy($id)
     {
+        //dd($id);
+        /**
+         * Crews
+         * movie_genre
+         * movie
+         */
+        // Deletes crew related to the movie
+        crew::where('movie_id',$id)->delete();
 
-        //
+        // deletes movie_genres related to the movie
+        movie_genre::where('movie_id',$id)->delete();
+
+        // Deletes the movie
+        movie::find($id)->delete();
+
+        return redirect('/movies')->with('success', 'movie deleted');
     }
 
     /**

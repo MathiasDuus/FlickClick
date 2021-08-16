@@ -8,6 +8,11 @@
 
                     <a href="{{ route('movies.edit', $movie)}}" class="btn btn-primary"> Update movie</a>
                 </div>
+                <div class="col-md text-right">
+                    <form method="POST" action="{{ route('movies.destroy', $movie)}}" >@csrf
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger"> Delete movie</button></form>
+                </div>
             </div>
         @endif
         <div id="top_movie" class="row">
