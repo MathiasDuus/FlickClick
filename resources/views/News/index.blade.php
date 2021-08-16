@@ -1,7 +1,13 @@
 @extends('Layouts.app')
 
 @section('content')
-
+    @if(Auth::user()->access_level == 2)
+        <div class="row card_padding">
+            <div class="col-md text-left">
+                <a href="news/create" class="btn btn-success"> New News</a>
+            </div>
+        </div>
+    @endif
     @foreach($news as $new)
         <div class="col news">
             <h2><b>{!! $new->title !!}</b></h2>
@@ -10,7 +16,9 @@
                     <b>Updated:</b> {{ date('d-m-Y',strtotime($new->updated_at)) }}
                 @endif
             </p>
-            <p class="news_long_cut_text">{!! $new->news_body !!}</p>
+            <div class="news_long_cut_text">
+                <p>{!! $new->deck.' ...' !!} </p>
+            </div>
             <a href="/news/{{$new->news_id}}">Read More</a>
         </div>
     @endforeach

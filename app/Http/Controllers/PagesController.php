@@ -32,25 +32,6 @@ class PagesController extends Controller
         return view('Pages.index', ["latest" => $latest, "commented" => $sortedMovies]);
     }
 
-    public function news(){
-        $news = news::orderBy('updated_at', 'desc')->get();
-
-        foreach ($news as $new){
-            $textLongCut = str::limit($new->news_body, 400,' ...');
-            $new['news_body']=$textLongCut;
-        }
-        //dd($news);
-        return view('News.index')->with('news', $news);
-    }
-
-    public function showNews($id){
-        // return a view to show specific news article
-        $news = news::where('news_id','=', $id)->first();
-
-        //dd($news);
-        return view('News.news')->with('news', $news);
-    }
-
     public function search(Request $item){
 
         $search = movie::where('title','LIKE','%'.$item->search_movie.'%')->select('movie_id','title','poster')->get();

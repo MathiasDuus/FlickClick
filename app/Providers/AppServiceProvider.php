@@ -33,12 +33,6 @@ class AppServiceProvider extends ServiceProvider
 
         $footerNews = news::orderBy('updated_at', 'desc')->paginate(3);
 
-
-        foreach ($footerNews as $new){
-            $textShortCut = str::limit($new->news_body, 130,' ...');
-            $new['news_body']=$textShortCut;
-        }
-
         View::share(["footerNews" => $footerNews, "footerMovies"=>$footerMovies]);
     }
 }

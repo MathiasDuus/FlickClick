@@ -1,7 +1,19 @@
 @extends('Layouts.app')
 
 @section('content')
+    @if(Auth::user()->access_level == 2)
+        <div class="row card_padding">
+            <div class="col-md text-left">
 
+                <a href="{{ route('news.edit', $news)}}" class="btn btn-primary"> Update news</a>
+            </div>
+            <div class="col-md text-right">
+                <form method="POST" action="{{ route('news.destroy', $news)}}" >@csrf
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-danger"> Delete news</button></form>
+            </div>
+        </div>
+    @endif
 
     <div class="col news">
         <h2><b>{!! $news->title !!}</b></h2>

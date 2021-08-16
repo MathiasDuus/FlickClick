@@ -11,4 +11,10 @@ class news extends Model
 
     // primary key
     public $primaryKey ='news_id';
+
+    protected $fillable = [
+        'title',
+        'news_body',
+        'deck',
+    ];
 }

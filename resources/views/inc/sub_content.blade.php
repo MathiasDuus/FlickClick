@@ -16,9 +16,9 @@
                     @endif
                 </p>
 
-                <p id="news-title">{!! $new->title !!}</p>
+                <p id="news-title">{!! $new->title !!}</p><br>
 
-                <p id="news-text">{!! $new->news_body !!}</p>
+                <p id="news-text">{!! $new->deck.' ...'!!}</p>
 
                 <a id="news-read_more" href="/news/{{$new->news_id}}">Read more</a>
 
