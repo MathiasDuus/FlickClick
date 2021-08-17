@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- Auth::user()->first_name --}}
 
     <div class="row" id="user_name">
         <h1 class="col">{{ Auth::user()->first_name.' '.Auth::user()->last_name }}</h1>
@@ -18,7 +17,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <p><b>oprettelsesdato: </b>{{Auth::user()->created_at}}</p>
+                    <p><b>Creation date: </b>{{Auth::user()->created_at}}</p>
                 </div>
             </div>
         </div>

@@ -1,12 +1,22 @@
 @extends('Layouts.app')
 
 @section('content')
+    @auth
+        @if(Auth::user()->access_level == 2)
+            <div class="row card_padding">
+                <div class="text-left">
 
-    <div class="row">
+                    <a href="{{ route('contact.edit', 1)}}" class="btn btn-primary"> Update description</a>
+                </div>
+            </div>
+        @endif
+    @endauth
+
+    <div class="row card_padding">
         <h1><b>Contact</b></h1>
     </div>
     <div class="row">
-        <p>{{$contact_site}}</p>
+        <p>{!! $contact_site !!}</p>
     </div>
 
     <div class="row">

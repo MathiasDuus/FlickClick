@@ -81,7 +81,8 @@ class ContactController extends Controller
      */
     public function edit($id)
     {
-        //
+        $contact_site = contact_site::where('id',$id)->first();
+        return view('Pages.edit_contact')->with('contact_site', $contact_site);
     }
 
     /**
@@ -93,7 +94,14 @@ class ContactController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'description' => 'required|string',
+        ]);
+        $cs = contact_site::find($id);
+        $cs->description = $request->input('description');
+        $cs->save();
+
+        return redirect('/contact')->with('success','Description updated');
     }
 
     /**
